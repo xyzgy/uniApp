@@ -14,5 +14,5 @@
 
 <style>
 	/*每个页面公共css */
-	@import "./common/common.less";
+	/* @import "./common/common.less"; */
 </style>

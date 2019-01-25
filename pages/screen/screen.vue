@@ -1,10 +1,14 @@
 <template>
 	<view
 		><screenShot @getSreenShot="getSreenShot">
-			<image src="../../static/my.jpg" mode="" :style="{
-							height: windowHeight + 'px',
-							width: windowWidth + 'px'
-						}"></image
+			<image
+				src="../../static/my.jpg"
+				mode=""
+				:style="{
+					height: windowHeight + 'px',
+					width: windowWidth + 'px'
+				}"
+			></image
 		></screenShot>
 	</view>
 </template>
@@ -16,9 +20,8 @@ export default {
 	},
 	data() {
 		return {
-			windowWidth:'',
-			windowHeight:'',
-			
+			windowWidth: '',
+			windowHeight: ''
 		};
 	},
 	onLoad() {
@@ -31,11 +34,12 @@ export default {
 			fail: function(err) {
 				console.log(err);
 			}
-		});		
+		});
 	},
 	methods: {
 		getSreenShot(r) {
-			console.log('rs', r);
+			// 获取截图路径
+			console.log('r', r);
 		}
 	}
 };

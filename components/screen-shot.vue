@@ -1,6 +1,6 @@
 <template>
 	<view >
-		<view class="absolute" id="capture"> <slot></slot> </view>
+		<view class="absolute" id="capture" > <slot></slot> </view>
 		<view
 			class="fixed canvasImg"
 			:style="{
@@ -56,6 +56,7 @@ export default {
 			success: function(res) {
 				_this.windowHeight = res.windowHeight;
 				_this.windowWidth = res.windowWidth;
+				
 			},
 			fail: function(err) {
 				console.log(err);
@@ -70,6 +71,8 @@ export default {
 				height: window.screen.availHeight, //canvas窗口高度
 				windowWidth: document.body.scrollWidth, //获取X方向滚动条内容
 				windowHeight: document.body.scrollHeight,
+				x:0,
+				y:window.pageYOffset
 			};
 			_this.iconDisplay = 'none';
 			html2canvas(document.querySelector('#capture'),canvasImgConfig).then(canvas => {
@@ -96,6 +99,12 @@ export default {
 </script>
 
 <style lang="less">
+	.fixed{
+		position: fixed;
+	}
+	.absolute{
+		position:absolute;
+	}
 .canvasImg {
 	background: rgba(102, 102, 102, 0.6);
 	z-index: 99;
