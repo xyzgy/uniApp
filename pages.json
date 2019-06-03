@@ -4,12 +4,14 @@
         
         {
             "path" : "pages/screen/screen",
-            "style" : {}
+            "style" : {
+			}
         },
 		{
 		    "path" : "pages/index/index",
 		    "style" : {
-		        "navigationBarTitleText" : "uni-app"
+		        "navigationBarTitleText" : "uni-app",
+				"enablePullDownRefresh": true
 		    }
 		}
     ],
@@ -17,7 +19,6 @@
         "navigationBarTextStyle" : "black",
         "navigationBarTitleText" : "uni-app",
         "navigationBarBackgroundColor" : "#F8F8F8",
-        "backgroundColor" : "#F8F8F8",
-		"navigationStyle" : "custom"
+        "backgroundColor" : "#F8F8F8"
     }
 }

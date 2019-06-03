@@ -1,20 +1,38 @@
 <template>
-	<view><uploadImage @click='uploadImage' count="2"  :isLimit="true" :isBase64="true" :isBasePrefix="true"/> </view>
+	<view style="padding:20px 0">
+		<chooseImage/>
+	</view>
 </template>
 <script>
-import uploadImage from '@/components/upload-image.vue';
+import chooseImage from '@/components/xyz-choose-image.vue';
+import screenShot from '@/components/screen-shot.vue';
 export default {
 	components: {
-		uploadImage
+		chooseImage,
+		screenShot
 	},
 	data() {
-		return{
-			
-		}
+		return {
+			windowWidth: '',
+			windowHeight: ''
+		};
 	},
-	methods:{
-		uploadImage(r){
-			console.log('rs',r)
+	onLoad() {
+		let _this = this;
+		uni.getSystemInfo({
+			success: function(res) {
+				_this.windowHeight = res.windowHeight;
+				_this.windowWidth = res.windowWidth;
+			},
+			fail: function(err) {
+				console.log(err);
+			}
+		});
+	},
+	methods: {
+		getSreenShot(r) {
+			// 获取截图路径
+			console.log('r', r);
 		}
 	}
 };

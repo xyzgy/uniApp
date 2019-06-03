@@ -1,6 +1,6 @@
 <template>
-	<view >
-		<view class="absolute" id="capture" > <slot></slot> </view>
+	<view>
+		<view class="absolute" id="capture"><slot></slot></view>
 		<view
 			class="fixed canvasImg"
 			:style="{
@@ -10,9 +10,7 @@
 			v-if="canvasImg.isDis"
 		>
 			<view class="relative">
-				<view class="absolute icon_close" @click="closeSreenShot">
-					<image src="/static/clear.png" mode=""></image>
-				</view>
+				<view class="absolute icon_close" @click="closeSreenShot"><image src="/static/clear.png" mode=""></image></view>
 				<view class="absolute">
 					<image
 						:src="canvasImg.imgSrc"
@@ -25,9 +23,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="absolute icon_download" @click="getSreenShot" :style="{ display: iconDisplay }">
-			<image src="/static/download.png" mode=""></image>
-		</view>
+		<view class="absolute icon_download" @click="getSreenShot" :style="{ display: iconDisplay }"><image src="/static/download.png" mode=""></image></view>
 	</view>
 </template>
 <script>
@@ -56,26 +52,25 @@ export default {
 			success: function(res) {
 				_this.windowHeight = res.windowHeight;
 				_this.windowWidth = res.windowWidth;
-				
 			},
 			fail: function(err) {
 				console.log(err);
 			}
-		});		
+		});
 	},
 	methods: {
 		getSreenShot() {
-			let _this = this;		
+			let _this = this;
 			let canvasImgConfig = {
 				width: window.screen.availWidth, //canvas窗口宽度
 				height: window.screen.availHeight, //canvas窗口高度
 				windowWidth: document.body.scrollWidth, //获取X方向滚动条内容
 				windowHeight: document.body.scrollHeight,
-				x:0,
-				y:window.pageYOffset
+				x: 0,
+				y: window.pageYOffset
 			};
 			_this.iconDisplay = 'none';
-			html2canvas(document.querySelector('#capture'),canvasImgConfig).then(canvas => {
+			html2canvas(document.querySelector('#capture'), canvasImgConfig).then(canvas => {
 				let imgSrc = canvas.toDataURL('image/jpeg');
 				_this.iconDisplay = 'none';
 				_this.canvasImg.isDis = true;
@@ -85,26 +80,25 @@ export default {
 					icon: 'none',
 					duration: 2000
 				});
-				
-				_this.$emit('getSreenShot',imgSrc)
+
+				_this.$emit('getSreenShot', imgSrc);
 			});
 		},
-			closeSreenShot(){
-				this.canvasImg.isDis = false;
-				this.iconDisplay = "block"
-				
-			}
-	},
+		closeSreenShot() {
+			this.canvasImg.isDis = false;
+			this.iconDisplay = 'block';
+		}
+	}
 };
 </script>
 
 <style lang="less">
-	.fixed{
-		position: fixed;
-	}
-	.absolute{
-		position:absolute;
-	}
+.fixed {
+	position: fixed;
+}
+.absolute {
+	position: absolute;
+}
 .canvasImg {
 	background: rgba(102, 102, 102, 0.6);
 	z-index: 99;
