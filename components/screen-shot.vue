@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="absolute" id="capture"><slot></slot></view>
+		<view class="absolute" id="capture" style="border:1px solid red"><slot></slot></view>
 		<view
 			class="fixed canvasImg"
 			:style="{
@@ -62,27 +62,36 @@ export default {
 		getSreenShot() {
 			let _this = this;
 			let canvasImgConfig = {
-				width: window.screen.availWidth, //canvas窗口宽度
-				height: window.screen.availHeight, //canvas窗口高度
-				windowWidth: document.body.scrollWidth, //获取X方向滚动条内容
-				windowHeight: document.body.scrollHeight,
-				x: 0,
-				y: window.pageYOffset
-			};
-			_this.iconDisplay = 'none';
-			html2canvas(document.querySelector('#capture'), canvasImgConfig).then(canvas => {
-				let imgSrc = canvas.toDataURL('image/jpeg');
-				_this.iconDisplay = 'none';
-				_this.canvasImg.isDis = true;
-				_this.canvasImg.imgSrc = imgSrc;
-				uni.showToast({
-					title: '长按图片保存至本地',
-					icon: 'none',
-					duration: 2000
-				});
+				width: _this.windowWidth, //canvas窗口宽度
+				height: _this.windowHeight, //canvas窗口高度
 
-				_this.$emit('getSreenShot', imgSrc);
-			});
+			};
+			// _this.iconDisplay = 'none';
+			// uni.createSelectorQuery() //创建节点查询器
+			// uni.createSelectorQuery().select('#capture') //选择第一个匹配节点
+			// uni.createSelectorQuery().selectAll('#capture') //选择匹配所有节点
+			
+			// uni.createSelectorQuery().select('#capture').boundingClientRect(function(){}) //获取节点信息
+			// uni.createSelectorQuery().exec(function(){}) //执行所有请求,以数组格式返回
+
+			uni.createSelectorQuery().select('#capture').boundingClientRect(function(rect){
+				console.log(rect)
+			}).exec(function(res){
+				console.log(res)
+			})
+// 			html2canvas(uni.createSelectorQuery().select('#capture'), canvasImgConfig).then(canvas => {
+// 				let imgSrc = canvas.toDataURL('image/jpeg');
+// 				_this.iconDisplay = 'none';
+// 				_this.canvasImg.isDis = true;
+// 				_this.canvasImg.imgSrc = imgSrc;
+// 				uni.showToast({
+// 					title: '长按图片保存至本地',
+// 					icon: 'none',
+// 					duration: 2000
+// 				});
+// 
+// 				_this.$emit('getSreenShot', imgSrc);
+// 			});
 		},
 		closeSreenShot() {
 			this.canvasImg.isDis = false;

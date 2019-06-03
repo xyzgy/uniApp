@@ -6,6 +6,13 @@
 					{{ item.label }}
 				</view>
 			</view>
+			<!-- 		
+			<view class="tab_main" style="display: inline-block;" :class="index == tabIdx ? 'tab_active' : ''" v-for="(item, index) in tabList" :key="index" @click="tabSelect(index)" :data-id="index">
+				<view class="relative">
+					<view class="name">{{ item.label }}</view>
+					<view class="absolute bottomLine"></view>
+				</view>
+			</view> -->
 		</scroll-view>
 	</view>
 </template>
@@ -20,6 +27,10 @@ export default {
 		tabActiveIdx: {
 			type: Number,
 			default: 0
+		},
+		isScroll: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {

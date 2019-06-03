@@ -1,41 +1,149 @@
 <template>
-	<view style="padding:20px 0">
-		<chooseImage/>
+	<view style="padding:20px 0;">
+		
+			<view><myTab :tabList="tabList" @tabSelect="tabSelect" :tabActiveIdx="tabActiveIdx" /></view>
+			<screenShot>
+			<view style="margin-top:80upx;">
+				<view v-if="tabActiveIdx === 0">
+					<chooseImage :num="6" :size="200" @chooseImage="chooseImage" @delImg="chooseImage" :isSave="false" saveStr="chooseImage" :isClear="hasChooseImg" />
+				</view>
+				<view v-else-if="tabActiveIdx === 1"><masonry :masonryList="masonryList" :isSize="false" :borderRadius="10" /></view>
+				<view v-else="tabActiveIdx === 2">
+					<myShare
+						shareImg="https://www.xyzgy.xyz/image/xyz.jpg"
+						title="canvas卡片生成"
+						author="xyz"
+						imgScan="https://www.xyzgy.xyz/image/xyz.jpg"
+						:bottomType="0"
+						:isWhiteSpace="false"
+						:borderRadius="20"
+						:shareImgW="574"
+						:shareImgH="548"
+						:padding="0"
+						:bottomPadding="[40, 20]"
+						@savePhoto="savePhoto"
+					/>
+				</view>
+			</view>
+		</screenShot>
 	</view>
 </template>
 <script>
 import chooseImage from '@/components/xyz-choose-image.vue';
+import masonry from '@/components/xyz-masonry.vue';
+import myShare from '@/components/xyz-share.vue';
+import myTab from '@/components/xyz-tab.vue';
 import screenShot from '@/components/screen-shot.vue';
 export default {
 	components: {
 		chooseImage,
+		masonry,
+		myShare,
+		myTab,
 		screenShot
 	},
 	data() {
 		return {
-			windowWidth: '',
-			windowHeight: ''
+			tabList: [
+				{
+					id: 0,
+					label: '选择图片'
+				},
+				{
+					id: 1,
+					label: '瀑布流'
+				},
+				{
+					id: 2,
+					label: '卡片分享'
+				}
+			],
+			tabActiveIdx: 0,
+			hasChooseImg: '',
+			masonryList: [
+				{
+					id: 0,
+					src: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=184692748,713617392&fm=26&gp=0.jpg',
+					size: [600, 200]
+				},
+				{
+					id: 1,
+					src: 'http://k.zol-img.com.cn/sjbbs/7692/a7691515_s.jpg',
+					size: [800, 600]
+				},
+				{
+					id: 2,
+					src: 'http://pic31.nipic.com/20130719/9885883_095141604000_2.jpg',
+					size: [1200, 800]
+				},
+				{
+					id: 3,
+					src: 'http://img4.cache.netease.com/photo/0001/2006-07-14/2M0RCN0D00J60001.jpg',
+					size: [400, 300]
+				},
+				{
+					id: 4,
+					src: 'http://img4.imgtn.bdimg.com/it/u=3811906947,4112515517&fm=26&gp=0.jpg',
+					size: [500, 400]
+				},
+				{
+					id: 6,
+					src: 'http://img1.imgtn.bdimg.com/it/u=2436132757,841731780&fm=26&gp=0.jpg',
+					size: [400, 800]
+				},
+				{
+					id: 0,
+					src: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=184692748,713617392&fm=26&gp=0.jpg',
+					size: [600, 200]
+				},
+				{
+					id: 1,
+					src: 'http://k.zol-img.com.cn/sjbbs/7692/a7691515_s.jpg',
+					size: [800, 600]
+				},
+				{
+					id: 2,
+					src: 'http://pic31.nipic.com/20130719/9885883_095141604000_2.jpg',
+					size: [1200, 800]
+				},
+				{
+					id: 3,
+					src: 'http://img4.cache.netease.com/photo/0001/2006-07-14/2M0RCN0D00J60001.jpg',
+					size: [400, 300]
+				}
+			]
 		};
 	},
 	onLoad() {
-		let _this = this;
 		uni.getSystemInfo({
-			success: function(res) {
-				_this.windowHeight = res.windowHeight;
-				_this.windowWidth = res.windowWidth;
-			},
-			fail: function(err) {
-				console.log(err);
+			success(res) {
+				console.log(res);
 			}
 		});
 	},
 	methods: {
-		getSreenShot(r) {
-			// 获取截图路径
-			console.log('r', r);
+		chooseImage(imgArr) {
+			console.log(imgArr);
+			this.hasChooseImg = imgArr;
+		},
+		savePhoto(path) {},
+		tabSelect(idx) {
+			this.tabActiveIdx = idx;
 		}
+	},
+	onReachBottom() {
+		this.masonryList = this.masonryList.concat(this.masonryList);
 	}
 };
 </script>
 
-<style lang="less"></style>
+<style lang="less">
+page {
+	background: #eee;
+}
+.tab {
+	position: fixed;
+	top: 0;
+	background: #fff;
+}
+</style>
