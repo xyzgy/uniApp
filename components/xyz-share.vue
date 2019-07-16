@@ -1,7 +1,7 @@
 <template>
 	<view class="canvas" :style="{ width: w + 'px', margin: '0 auto' }">
 		<canvas canvas-id="testCanvas" :style="{ width: w + 'px', height: h + 'px' }"></canvas>
-		<view v-if="isBtn"  class="savePhoto " @click="savePhoto" :style="{ width: w + 'px' }">保存到相册</view>
+		<view v-if="isBtn" class="savePhoto " @click="savePhoto" :style="{ width: w + 'px' }">保存到相册</view>
 	</view>
 </template>
 
@@ -74,6 +74,14 @@ export default {
 			//底部作者区域显示类型 0 作者|名字 1 ·作者
 			type: Number,
 			default: 0
+		},
+		bgColor:{
+			type: String,
+			default: '#ffffff'
+		},
+		textColor:{
+			type: String,
+			default: '#31303B'
 		}
 	},
 
@@ -110,13 +118,15 @@ export default {
 			uni.showLoading({
 				title: '正在保存中'
 			});
+			//#ifdef MP-WEIXIN
 			uni.canvasToTempFilePath({
 				canvasId: 'testCanvas',
 				fileType: _this.imgType,
 				success: function(res) {
-					// console.log(res)
+					console.log(res);
 					uni.hideLoading();
 					_this.srcImg = res.tempFilePath;
+
 					uni.saveImageToPhotosAlbum({
 						filePath: res.tempFilePath,
 						success(res1) {
@@ -132,20 +142,27 @@ export default {
 							});
 							uni.hideLoading();
 						},
-						complete() {
-							
-						}
+						complete() {}
 					});
 				},
 				fail(err) {
 					uni.hideLoading();
 					console.log(err);
 				}
-			});
+			},_this);
+			//#endif
+			//#ifndef MP-WEIXIN
+			let str = document.createElement('a');
+			let event = new MouseEvent('click');
+			str.download = name || 'xyz';
+			str.href = document.getElementsByTagName('canvas')[0].toDataURL(_this.imgType);
+			str.dispatchEvent(event);
+			uni.hideLoading();
+			//#endif
 		},
 		drawRoundRect(ctx, x, y, w, h, r, lineWidth, color) {
 			ctx.beginPath();
-			// ctx.fillStyle = 'transparent';
+			// ;
 			// 左上角
 			ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5);
 
@@ -160,8 +177,8 @@ export default {
 			ctx.closePath();
 			// ctx.lineWidth = lineWidth;
 			// if (color !== '') {
-			ctx.strokeStyle = 'rgba(255, 255, 255, 0)';
-			ctx.fillStyle = color;
+			ctx.strokeStyle = this.bgColor;
+			ctx.fillStyle = this.bgColor;
 			// }
 			ctx.stroke();
 			ctx.fill();
@@ -170,14 +187,13 @@ export default {
 		async drawImage() {
 			let _this = this;
 			let imgInfo = await _this.getImageInfo(_this.shareImg);
-			let imgScanInfo = await _this.getImageInfo( _this.imgScan );
+			let imgScanInfo = await _this.getImageInfo(_this.imgScan);
 			let r = [imgInfo.width, imgInfo.height];
 			let path = imgInfo.path,
 				imgScanPath = imgScanInfo.path;
 
 			let canvas_x_position = _this.padding,
 				canvas_y_position = _this.padding; //开始绘制区域左上角顶点坐标
-
 
 			if (_this.isWhiteSpace) {
 				if (r[0] < _this.shareImgW) {
@@ -222,14 +238,11 @@ export default {
 			let scanPositionX = canvasW - _this.imgScanW - _this.bottomPadding[1]; //计算二维码距离左侧位置
 			let bottomPositionY = canvas_y_position + r[1] + _this.bottomPadding[0]; //下半部分距离图片高度
 
+			const ctx = uni.createCanvasContext('testCanvas',_this);
 
-			const ctx = uni.createCanvasContext('testCanvas');
-
-			ctx.setFillStyle('rgba(255, 255, 255, 0)');
-
+			ctx.fillStyle = 'transparent';
 			ctx.fillRect(0, 0, uni.upx2px(canvasW), uni.upx2px(canvasH));
 			// 绘制圆角
-
 			_this.drawRoundRect(ctx, 0, 0, uni.upx2px(canvasW), uni.upx2px(canvasH), uni.upx2px(_this.borderRadius), 2, 'white');
 
 			//绘制第一张图片
@@ -238,12 +251,12 @@ export default {
 
 			// 绘制下半部分
 			// 设置图片描述/图片标题
-			ctx.setFontSize(uni.upx2px(32));
-			ctx.setFillStyle('#31303B');
+			ctx.font = uni.upx2px(32)+"px sans-serif"
+			ctx.fillStyle = this.textColor;
 			ctx.fillText(_this.title, uni.upx2px(_this.bottomPadding[1]), uni.upx2px(bottomPositionY + 32)); //32为字体大小
 			// 绘制作者名称
-			ctx.setFontSize(uni.upx2px(28));
-			ctx.setFillStyle('#A6A6A6');
+			ctx.font = uni.upx2px(28)+"px sans-serif"
+			ctx.fillStyle = this.textColor;
 			if (_this.bottomType === 0) {
 				ctx.fillText('作者 | ' + _this.author, uni.upx2px(_this.bottomPadding[1]), uni.upx2px(bottomPositionY + 28 + 100), uni.upx2px(scanPositionX));
 			} else {
@@ -263,18 +276,18 @@ export default {
 					src: path,
 					success: function(info) {
 						// console.log(image)
-						resolve(info)
+						resolve(info);
 					},
 					fail(err) {
-		
-						reject(err)
+						reject(err);
 					}
 				});
-			})
-		},
+			});
+		}
 	},
-	onLoad() {
-		this.showScreen()
+	mounted() {
+		this.showScreen();
+		console.log(this.shareImg);
 	}
 };
 </script>

@@ -1,8 +1,16 @@
 <template>
 	<view class=" chooseImage " style="display: flex;flex-wrap: wrap;">
 		<view style="position: relative;" v-for="(item, index) in imgList" :key="index" :style="{ width: size + 'rpx', height: size + 'rpx' }">
-			<image :src="imgList[index]" :style="{ width: size + 'rpx', height: size + 'rpx' }" @click="viewImg(imgList[index])"></image>
-			<view class="icon_close " style="position: absolute;" @click="delImg(index)"><i class="iconfont " style="">&#xe635;</i></view>
+			<image :src="imgList[index]" :style="{ width: size + 'rpx', height: size + 'rpx' }" mode="aspectFill" @click="viewImg(imgList[index])"></image>
+			<view class="icon_close " style="position: absolute;" @click="delImg(index)">
+				<!--#ifndef MP-TOUTIAO-->
+				<i class="iconfont " style="">&#xe635;</i>
+				<!--#endif -->
+				<!-- #ifdef MP-TOUTIAO-->
+				<image src="/static/clear.png" mode="widthFix" style="width:40upx;height: 40upx;"></image>
+				<!-- <i class="iconfont " style="">&#xe635;</i> -->
+				<!--#endif-->
+			</view>
 		</view>
 		<view v-if="imgList.length < num" class="text_center" @click="chooseImage">
 			<image src="https://www.xyzgy.xyz/image/upload.png" mode="widthFix" :style="{ width: size + 'rpx' }"></image>
@@ -33,9 +41,10 @@ export default {
 			type: String,
 			default: 'chooseImage'
 		},
-		isBase64: { //是否转base64 受数据传输长度限制，不建议在组件中使用，如果一定要使用，在返回结果中自己转换
+		isBase64: {
+			//是否转base64 受数据传输长度限制，不建议在组件中使用，如果一定要使用，在返回结果中自己转换
 			type: Boolean,
-			default: true
+			default: false
 		}
 	},
 	data() {
@@ -56,17 +65,19 @@ export default {
 			return new Promise((resolve, reject) => {
 				uni.chooseImage({
 					count: _count, //默认9
+					//#ifndef MP-TOUTIAO
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+					//#endif
 					sourceType: ['album', 'camera'], //从相册选择
 					success: function(res) {
 						if (_this.isBase64) {
-							//#ifdef MP-WEIXIN
+							//#ifdef MP-WEIXIN || MP-TOUTIAO
 							uni.getFileSystemManager().readFile({
 								filePath: res.tempFilePaths[0], //选择图片返回的相对路径
 								encoding: 'base64', //编码格式
 								success: function(ress) {
 									//成功的回调
-									console.log(ress)
+									console.log(ress);
 									let base64 = 'data:image/jpeg;base64,' + ress.data;
 									if (_this.imgList.length != 0) {
 										_this.imgList = _this.imgList.concat(base64);
@@ -74,8 +85,8 @@ export default {
 										_this.imgList = [base64];
 									}
 								},
-								fail:function(err){
-									console.log(err)
+								fail: function(err) {
+									console.log(err);
 								}
 							});
 							//#endif
@@ -85,20 +96,7 @@ export default {
 							} else {
 								_this.imgList = res.tempFilePaths;
 							}
-							// 暂时没有基于chooseImaged解决方法
-							// 							let r = new Blob(res.tempFilePaths, {
-							// 								type: 'image/jpeg'
-							// 							});
-							// 							console.log(res.tempFilePaths)
-							// 							console.log(r)
-							// 							let reader = new FileReader();
-							// 							reader.readAsDataURL(r);
-							// 							reader.onload = function(e) {
-							// 								console.info(reader.result);
-							// 								let base64 = reader.result;
 
-							// 								//
-							// 							};
 							//#endif
 						} else {
 							if (_this.imgList.length != 0) {
@@ -131,7 +129,7 @@ export default {
 			});
 		}
 	},
-	onLoad() {
+	mounted() {
 		if (this.isSave) {
 			let str = uni.getStorageSync(this.saveStr);
 			if (str != '') {
@@ -167,18 +165,17 @@ export default {
 }
 .chooseImage {
 	> view {
-		margin: 0 20px 20px 0;
+		margin: 0 20upx 20upx 0;
 	}
 	.icon_close {
-		width: 20px;
-		height: 20px;
-		right: -10px;
-		top: -10px;
+		right: 0;
+		top: 0;
 		.iconfont {
-			background: #ccc;
+			background: rgba(0, 0, 0, 0.4);
+			color: #fff;
 			border-radius: 50%;
-			padding: 4px;
-			font-size: 10px;
+			padding: 8upx;
+			font-size: 20upx;
 		}
 	}
 }

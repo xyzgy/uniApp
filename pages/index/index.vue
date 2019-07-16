@@ -1,31 +1,36 @@
 <template>
-	<view style="padding:20px 0;">
-		
-			<view><myTab :tabList="tabList" @tabSelect="tabSelect" :tabActiveIdx="tabActiveIdx" /></view>
-			<screenShot>
-			<view style="margin-top:80upx;">
-				<view v-if="tabActiveIdx === 0">
-					<chooseImage :num="6" :size="200" @chooseImage="chooseImage" @delImg="chooseImage" :isSave="false" saveStr="chooseImage" :isClear="hasChooseImg" />
+	<view >
+		<!-- <xyzNavBar :isBack="false" :isBackBtn="false" backTxt=" " @goBack="goBack"></xyzNavBar> -->
+		<view style="position:relative"><myTab :tabList="tabList" @tabSelect="tabSelect" :tabActiveIdx="tabActiveIdx" /></view>
+		<view style="margin-top:80upx;">
+			<view v-if="tabActiveIdx === 0">
+				<view style="padding:10upx 20upx;background:#fff">
+					<myInput/>
 				</view>
-				<view v-else-if="tabActiveIdx === 1"><masonry :masonryList="masonryList" :isSize="false" :borderRadius="10" /></view>
-				<view v-else="tabActiveIdx === 2">
-					<myShare
-						shareImg="https://www.xyzgy.xyz/image/xyz.jpg"
-						title="canvas卡片生成"
-						author="xyz"
-						imgScan="https://www.xyzgy.xyz/image/xyz.jpg"
-						:bottomType="0"
-						:isWhiteSpace="false"
-						:borderRadius="20"
-						:shareImgW="574"
-						:shareImgH="548"
-						:padding="0"
-						:bottomPadding="[40, 20]"
-						@savePhoto="savePhoto"
-					/>
-				</view>
+				<mySwiper :arrList="masonryList"/>
 			</view>
-		</screenShot>
+			<view v-else-if="tabActiveIdx === 1">
+				<chooseImage :num="6" :size="150" @chooseImage="chooseImage" @delImg="chooseImage" :isSave="true" saveStr="chooseImage" :isClear="hasChooseImg" />
+			</view>
+			<view v-else-if="tabActiveIdx === 2"><masonry :masonryList="masonryList" :isSize="false" :borderRadius="10" /></view>
+			<view v-else="tabActiveIdx === 3">
+				<myShare
+					shareImg="https://www.xyzgy.xyz/image/xyz.jpg"
+					title="canvas卡片生成"
+					author="xyz"
+					imgScan="https://www.xyzgy.xyz/image/xyz.jpg"
+					:bottomType="0"
+					:isWhiteSpace="false"
+					:borderRadius="20"
+					:shareImgW="574"
+					:shareImgH="548"
+					:padding="0"
+					:bottomPadding="[40, 20]"
+					@savePhoto="savePhoto"
+				/>
+			</view>
+		</view>
+		<!-- </screenShot> -->
 	</view>
 </template>
 <script>
@@ -33,28 +38,34 @@ import chooseImage from '@/components/xyz-choose-image.vue';
 import masonry from '@/components/xyz-masonry.vue';
 import myShare from '@/components/xyz-share.vue';
 import myTab from '@/components/xyz-tab.vue';
-import screenShot from '@/components/screen-shot.vue';
+import mySwiper from '@/components/xyz-swiper.vue';
+import myInput from '@/components/xyz-input.vue';
 export default {
 	components: {
 		chooseImage,
 		masonry,
 		myShare,
 		myTab,
-		screenShot
+		mySwiper,
+		myInput
 	},
 	data() {
 		return {
 			tabList: [
 				{
 					id: 0,
-					label: '选择图片'
+					label: '表单'
 				},
 				{
 					id: 1,
-					label: '瀑布流'
+					label: '选择图片'
 				},
 				{
 					id: 2,
+					label: '瀑布流'
+				},
+				{
+					id: 3,
 					label: '卡片分享'
 				}
 			],
@@ -117,7 +128,7 @@ export default {
 	onLoad() {
 		uni.getSystemInfo({
 			success(res) {
-				console.log(res);
+				// console.log(res);
 			}
 		});
 	},
@@ -142,8 +153,6 @@ page {
 	background: #eee;
 }
 .tab {
-	position: fixed;
-	top: 0;
 	background: #fff;
 }
 </style>

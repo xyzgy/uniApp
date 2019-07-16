@@ -52,14 +52,23 @@
         "setting" : {
             "urlCheck" : false,
             "es6" : true
-        }
+        },
+        "usingComponents" : true
     },
     "h5" : {
         "title" : "myComponent",
         "domain" : "www.xyzgy.top",
         "router" : {
             "base" : "/",
-            "mode" : "history"
+            "mode" : "hash"
         }
+    },
+    "mp-toutiao" : {
+        "appid" : "ttfe348889611e7951",
+        "setting" : {
+            "es6" : true,
+            "urlCheck" : false
+        },
+        "usingComponents" : true
     }
 }

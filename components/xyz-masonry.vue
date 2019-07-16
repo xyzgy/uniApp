@@ -102,7 +102,7 @@ export default {
 			})
 		},
 	},
-	onLoad() {
+	mounted() {
 		this.handleData(this.masonryList)
 	}
 };
