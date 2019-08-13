@@ -1,13 +1,15 @@
 <template>
-	<view >
+	<view>
 		<!-- <xyzNavBar :isBack="false" :isBackBtn="false" backTxt=" " @goBack="goBack"></xyzNavBar> -->
 		<view style="position:relative"><myTab :tabList="tabList" @tabSelect="tabSelect" :tabActiveIdx="tabActiveIdx" /></view>
 		<view style="margin-top:80upx;">
 			<view v-if="tabActiveIdx === 0">
-				<view style="padding:10upx 20upx;background:#fff">
-					<myInput/>
-				</view>
-				<mySwiper :arrList="masonryList"/>
+				<!-- <open-data type="userAvatarUrl"></open-data> -->
+				<!-- <button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">手机号</button> -->	
+				<view @click="testRequest"><button type="primary" class="btn_style">测试</button></view>
+				<userAuth/>
+				<view style="padding:10upx 20upx;background:#fff"><myInput /></view>
+				<mySwiper :arrList="masonryList" />
 			</view>
 			<view v-else-if="tabActiveIdx === 1">
 				<chooseImage :num="6" :size="150" @chooseImage="chooseImage" @delImg="chooseImage" :isSave="true" saveStr="chooseImage" :isClear="hasChooseImg" />
@@ -30,7 +32,6 @@
 				/>
 			</view>
 		</view>
-		<!-- </screenShot> -->
 	</view>
 </template>
 <script>
@@ -40,6 +41,7 @@ import myShare from '@/components/xyz-share.vue';
 import myTab from '@/components/xyz-tab.vue';
 import mySwiper from '@/components/xyz-swiper.vue';
 import myInput from '@/components/xyz-input.vue';
+import userAuth from '@/components/xyz-user-auth.vue';
 export default {
 	components: {
 		chooseImage,
@@ -47,7 +49,8 @@ export default {
 		myShare,
 		myTab,
 		mySwiper,
-		myInput
+		myInput,
+		userAuth
 	},
 	data() {
 		return {
@@ -133,13 +136,47 @@ export default {
 		});
 	},
 	methods: {
-		chooseImage(imgArr) {
+		async chooseImage(imgArr) {
 			console.log(imgArr);
-			this.hasChooseImg = imgArr;
+			let arr = [];
+			for(let i=0;i<imgArr.length;i++){
+				arr.push(await this.toBase64(imgArr[i]))
+			}
+			console.log(arr)		
+		},
+		toBase64(path){
+			return new Promise((resolve, reject) => {
+				uni.getFileSystemManager().readFile({
+					filePath: path, //选择图片返回的相对路径
+					encoding: 'base64', //编码格式
+					success: function(ress) {
+						//成功的回调
+						let base64 = 'data:image/jpeg;base64,' + ress.data;
+						resolve(base64)
+				
+					},
+					fail: function(err) {
+						reject(err);
+					}
+				});
+			})
 		},
 		savePhoto(path) {},
 		tabSelect(idx) {
 			this.tabActiveIdx = idx;
+		},
+		async testRequest(){
+			const config = {
+				url: 'graphicList',
+				params: '',
+				method: 'post',
+				loading: false
+			};
+			let getResult = await this.$store.dispatch('apiRequest', config);
+			// console.log(this.$config.banner({}))
+		},
+		getPhoneNumber(e){
+			console.log(e)
 		}
 	},
 	onReachBottom() {

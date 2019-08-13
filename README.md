@@ -12,10 +12,35 @@
 * xyz-textarea 支持数字统计 (兼容头条)
 * xyz-modal 自定义提示框 可自定义按钮文字 (兼容头条)
 * xyz-navbar 自定义导航栏样式 支持自定义返回按钮功能 添加返回文字 (兼容头条)
-* xyz-scroll-view 下拉刷新/上拉加载 可修改加载文字及图标 返回顶部 跳转指定位置
+* xyz-scroll-view 下拉刷新/上拉加载 可修改加载文字及图标 返回顶部 跳转指定位置 右侧索引列表
+* xyz-user-auth 用户授权 与 store 联用
 * xyz-handle-image 图片裁剪
 * xyz-img-tt  图片裁剪 
+* 
 ---
+## 状态管理 store 
+* index store主目录
+* actions  异步操作函数，可以调用mutations(commit) 也可调用action(dispatch)
+* mutations 必须为同步函数 commit提交更改state(唯一更改state方法)
+* getters  类似computed属性
+* apis api接口统一目录 
+* interceptors 拦截器设置  若启用拦截器 isUse为true即可
+##  store 说明
+* actions
+| 字段/方法名		|  字段/方法名说明												|
+| ---登录流程涉及---	| ------												|
+| apiRequest()		| 统一请求方法入口	可以设置拦截器											|
+| responseError()		| 对apiRequest()响应成功之后错误数据的处理												|
+| getUserinfo()		| 获取用户信息方法中默认用户授权之后直接getToken()获取token getProvider('oauth')												|
+| getToken()		| 与后台交互获取token												|
+| getLoginCode()		| 获取code值，code只能使用一次，未设置state												|
+| getProvider()		| 获取服务供应商												|
+| isGetUserInfo()		| 用户是否已授权获取信息	 getUserSetting('scope.userInfo')											|
+| getUserSetting()		| 验证是否获取用户某项授权设置												|
+| ------	| ------												|
+| userAuthorize()		| 用户授权申请  除userinfo外可提前发出请求												|
+| getImageInfo()	| 获取图片信息|
+
 ## xyz-tab 顶部导航
 
 * 长度5一下将平均分配距离，超出屏幕将会滚动
@@ -39,7 +64,7 @@ V1.0.1 编译模式修改 增加头条小程序
 | num		| 图片数量												|
 | isSave	| 是否记录用户已选择图片								|
 | saveStr	| 缓存记录时字段										|
-| isBase64	| 结果是否转base64 仅支持小程序且图片不能过大不建议使用	|
+| isBase64	| 结果是否转base64 仅支持小程序且图片不能过大不建议使用,可将代码复制出来在chooseImage中直接转换	(详见show.vue)|
 | ------	| ------												|
 | chooseImage()	| 调用getImage，并且emit绑定	|
 | getImage()	| 调用uni.chooseImage选择本地相册图片或者拍照	|
@@ -174,6 +199,8 @@ V1.0.1 编译模式修改 增加头条小程序
 | dataStatus		| 监听数据状态变化  true有更多数据											|
 | isGoTop		| 是否显示返回顶部按钮											|
 | goTopVal		| 滚动距离后显示按钮											|
+| isUseIdx		| 是否使用右侧索引											|
+| useIdxList		| 索引数据列表										|
 | ------	| ------												|
 | scroll()		| 	滚动事件									|
 | scrolltolower()		| 	滚动至底部								|
@@ -182,6 +209,7 @@ V1.0.1 编译模式修改 增加头条小程序
 | touchmove()		| 	触摸移动中									|
 | touchend()		| 	触摸移动结束									|
 | goTop()		| 	返回顶部									|
+| goIdx()		| 	索引跳转		 调用scrollIntoView()方法							|
 | scrollIntoView()		| 	scroll-into-view 方法实现 该方法需要在父组件中实现	通过组件watch 监听scrollTop值变化实现							|
 (```)
 scrollIntoView(id) {

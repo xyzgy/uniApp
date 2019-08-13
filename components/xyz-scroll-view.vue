@@ -32,7 +32,12 @@
 				<view v-else class="up_nodata pull_up_txt">没有更多了</view>
 			</view>
 		</scroll-view>
-		<view v-if="goTopShow" @click="goTop" class="goTop"><view>返回顶部</view></view>
+		<view v-if="isUseIdx" class="use_idx">
+			<view>
+				<view v-for="(item, index) in useIdxList" :key="index" @click="goIdx(index)">{{ index }}</view>
+			</view>
+		</view>
+		<view v-if="goTopShow" @click="goTop" class="go_top"><view>返回顶部</view></view>
 	</view>
 </template>
 
@@ -100,16 +105,26 @@ export default {
 			type: Boolean,
 			default: true
 		},
-		goTopVal:{
+		goTopVal: {
 			// 滚动距离后显示按钮
 			type: Number,
 			default: 50
+		},
+		isUseIdx: {
+			//是否使用索引
+			type: Boolean,
+			default: true
+		},
+		useIdxList: {
+			//索引列表
+			type: Array,
+			default: []
 		}
 	},
 	watch: {
 		scrollTop(a, b) {
 			// 辅助实现scroll-into-view功能
-			this.scrollT = a;
+			this.scrollT = (a+this.oldScrollT);
 		},
 		// 监听数据变化,隐藏对应的显示区域
 		pullStatus(a, b) {
@@ -126,23 +141,26 @@ export default {
 		return {
 			scrollHeight: '',
 			scrollT: this.scrollTop,
-			goTopShow:false,//返回顶部按钮显示
+			oldScrollT: this.scrollTop,
+			goTopShow: false, //返回顶部按钮显示
 			touchstartObj: {},
 			touchmoveObj: {},
 			touchendObj: {},
 			isPull: false, //是否显示下拉刷新区域
 			pullHeight: 0, //下拉文字展示区域高度
 			isUp: false, //是否显示上拉加载区域
-			isMore: true //是否有更多数据
+			isMore: true ,//是否有更多数据
+			idxActive:0 //当前索引
 		};
 	},
 	methods: {
 		scroll(e) {
-			if(e.detail.scrollTop>this.goTopVal&&this.isGoTop){
-				this.goTopShow = true
-			}else{
-				this.goTopShow = false
+			if (e.detail.scrollTop > this.goTopVal && this.isGoTop) {
+				this.goTopShow = true;
+			} else {
+				this.goTopShow = false;
 			}
+			this.oldScrollT = e.detail.scrollTop;
 			this.$emit('moveScroll', e);
 		},
 		scrolltolower(e) {
@@ -198,19 +216,25 @@ export default {
 			};
 			_this.$emit('moveEnd', this.touchendObj);
 		},
-		goTop(){
-			this.scrollT = 10;
+		goTop() {
+			this.scrollT = this.oldScrollT;
 			this.$nextTick(function() {
-                this.scrollT = 0;
-            });
-
+				this.scrollT = 0;
+			});
+		},
+		goIdx(idx){
+			if(this.idxActive === idx){
+				return;
+			}
+			this.idxActive = idx;
+			this.$emit("goIdx",idx)
 		}
 	},
 	mounted() {
 		let _this = this;
 		uni.getSystemInfo({
 			success(res) {
-				console.log(res);
+				// console.log(res);
 				_this.scrollHeight = res.windowHeight;
 			}
 		});
@@ -281,18 +305,35 @@ export default {
 		transform: rotate(360deg);
 	}
 }
-.goTop{
+.use_idx {
 	position: relative;
-	>view{
+	> view {
 		position: fixed;
-		width:80upx;
+		background: #ccc;
+		top: 20upx;
+		right: 0upx;
+		view {
+			font-size: 30upx;
+			width: 60upx;
+			height: 60upx;
+			text-align: center;
+			line-height: 60upx;
+			margin-bottom: 10upx;
+		}
+	}
+}
+.go_top {
+	position: relative;
+	> view {
+		position: fixed;
+		width: 80upx;
 		background: #ccc;
 		text-align: center;
-		border:1px solid #ccc;
+		border: 1px solid #ccc;
 		border-radius: 10upx;
 		font-size: 30upx;
-		bottom:100upx;
-		right:20upx;
+		bottom: 100upx;
+		right: 20upx;
 	}
 }
 </style>

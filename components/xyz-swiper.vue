@@ -8,16 +8,15 @@
 			:interval="interval"
 			:duration="duration"
 			:circular="circular"
+			:vertical="vertical"
 			@change="dotsChange"
-			style="height: 477upx;"
+			:style="{height: height + 'rpx'}"
 		>
-			<swiper-item v-for="(item, index) in arrList" :key="index" @click="goWebView(item.link, item.type)">
-				<view style="display: flex;justify-content: space-around;background:#F3F3F3">
-					<image :src="item.src" style="width:750upx;height: 477upx;" lazy-load></image>
-				</view>
+			<swiper-item v-for="(item, index) in arrList" :key="index" @click="goNavigateTo(item.url, item.id)">
+				<view style="display: flex;justify-content: space-around;background:#F3F3F3"><image :src="item.pic" style="width:750upx;" :style="{height: height + 'rpx'}" lazy-load></image></view>
 			</swiper-item>
 		</swiper>
-		<view v-if="isDiyDots" style="position:absolute;width:100%;bottom:10upx;">
+		<view v-if="isDiyDots" style="position:absolute;width:100%;bottom:20upx;">
 			<view style="display: flex;justify-content: space-around;">
 				<view style="display: flex;" class="swiper_dots"><view v-for="(item, index) in arrList" :key="index" :class="dotIdx == index ? 'dot_active' : ''"></view></view>
 			</view>
@@ -29,6 +28,7 @@
 export default {
 	props: {
 		indicatorDots: {
+			// 是否显示小圆点
 			type: Boolean,
 			default: false
 		},
@@ -56,7 +56,11 @@ export default {
 			type: Boolean,
 			default: true
 		},
-		isDiyDots:{
+		vertical:{
+			type: Boolean,
+			default: false
+		},
+		isDiyDots: {
 			// 是否自定义小圆点样式
 			type: Boolean,
 			default: true
@@ -64,6 +68,10 @@ export default {
 		arrList: {
 			type: Array,
 			default: []
+		},
+		height:{
+			type: Number,
+			default: 375
 		}
 	},
 	data() {
@@ -75,22 +83,17 @@ export default {
 		dotsChange(e) {
 			this.dotIdx = e.detail.current;
 		},
-		goWebView(link, type) {
-			if (type === 0) {
-				uni.navigateTo({
-					url: '/pages/webView/webView?link=' + link
-				});
-			} else if (type === 1) {
-				uni.navigateTo({
-					url: link
-				});
-			}
+		goNavigateTo(url, id) {
+			uni.navigateTo({
+				url: url
+			});
 		}
 	}
 };
 </script>
 
 <style scoped="" lang="less">
+// 自定义小圆点样式
 .swiper_dots {
 	> view {
 		width: 16upx;
