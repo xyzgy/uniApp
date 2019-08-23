@@ -1,7 +1,9 @@
 * 组件是基于本人实际开发场景，不一定适用于所有人，可借鉴思路
 * github代码更新一定比uniapp插件市场更新及时，全面(本人比较懒,懒得去单独拆分，单独写文档)
 * github代码为所有组件使用示例集合
+* 下载的小伙伴们，点个小星星可好(#^.^#)
 ---
+
 ### 组件列表 所有组件都仅测试微信小程序 若测试其它会有说明
 * xyz-tab 顶部导航(长度5以下将平均分配距离，超出屏幕将会滚动)
 * xyz-choose-image  图片选择 (兼容头条)
@@ -16,30 +18,53 @@
 * xyz-user-auth 用户授权 与 store 联用
 * xyz-handle-image 图片裁剪
 * xyz-img-tt  图片裁剪 
-* 
+* uParse 富文本编辑（来自插件市场）
+
+## 2019-08-22 
+* 新增utils文件夹，将store中 部分方法提至utils文件，项目目录更加清晰
+* xyz-swiper 更新 新增previousMargin、nextMargin属性
+* 增加富文本解析组件（来自插件市场）
+
+## 2019-08-13 
+* 新增组件 xyz-navbar / xyz-scroll-view / xyz-swiper / xyz-user-auth
+
+## 2019-07-16
+* 新增组件 xyz-choose-image / xyz-handle-image / xyz-tab / xyz-input / xyz-textarea / xyz-modal / xyz-masonry  / xyz-share
+
+## 2019-06-13
+* screen-shot(h5 当前页面截图)/
 ---
+
+## utils 常用工具类方法
+* http 封装请求方法 可配置拦截器 
+* util 封装公共方法 提示框(showToast) 界面跳转
+* common 项目中频繁调用的接口
+
 ## 状态管理 store 
 * index store主目录
 * actions  异步操作函数，可以调用mutations(commit) 也可调用action(dispatch)
 * mutations 必须为同步函数 commit提交更改state(唯一更改state方法)
 * getters  类似computed属性
-* apis api接口统一目录 
-* interceptors 拦截器设置  若启用拦截器 isUse为true即可
+
+~~ apis api接口统一目录  (08-22 移至  utils/util) ~~
+~~ interceptors 拦截器设置  若启用拦截器 isUse为true即可 (08-22 移至  utils/util) ~~
+ 
 ##  store 说明
 * actions
-| 字段/方法名		|  字段/方法名说明												|
-| ---登录流程涉及---	| ------												|
-| apiRequest()		| 统一请求方法入口	可以设置拦截器											|
-| responseError()		| 对apiRequest()响应成功之后错误数据的处理												|
-| getUserinfo()		| 获取用户信息方法中默认用户授权之后直接getToken()获取token getProvider('oauth')												|
-| getToken()		| 与后台交互获取token												|
-| getLoginCode()		| 获取code值，code只能使用一次，未设置state												|
-| getProvider()		| 获取服务供应商												|
-| isGetUserInfo()		| 用户是否已授权获取信息	 getUserSetting('scope.userInfo')											|
-| getUserSetting()		| 验证是否获取用户某项授权设置												|
-| ------	| ------												|
-| userAuthorize()		| 用户授权申请  除userinfo外可提前发出请求												|
-| getImageInfo()	| 获取图片信息|
+
+| 字段/方法名								|  字段/方法名说明																|
+| ---登录流程涉及---						| ------																		|
+| ~~apiRequest()(08-22 移至  utils/util)~~		| 统一请求方法入口可以设置拦截器												|
+| ~~responseError()(08-22 移至  utils/util)~~	| 对apiRequest()响应成功之后错误数据的处理										|
+| ~~getUserinfo()~~								| 获取用户信息方法中默认用户授权之后直接getToken()获取token getProvider('oauth')|
+| getToken()								| 与后台交互获取token															|
+| ~~getLoginCode()~~							| 获取code值，code只能使用一次，未设置state										|
+| ~~getProvider()	~~							| 获取服务供应商																|
+| ~~isGetUserInfo()	~~						| 用户是否已授权获取信息 getUserSetting('scope.userInfo')						|
+| ~~getUserSetting()~~							| 验证是否获取用户某项授权设置													|
+| ------									| ------																		|
+| ~~userAuthorize()	~~						| 用户授权申请  除userinfo外可提前发出请求										|
+| ~~getImageInfo()(08-22 移至  utils/util)~~	| 获取图片信息																	|
 
 ## xyz-tab 顶部导航
 
@@ -56,7 +81,7 @@
 
 ## xyz-choose-image 选择图片
 
-V1.0.1 编译模式修改 增加头条小程序
+* V1.0.1 编译模式修改 增加头条小程序
 
 | 字段/方法名		|  字段/方法名说明												|
 | ------	| ------												|
@@ -64,29 +89,37 @@ V1.0.1 编译模式修改 增加头条小程序
 | num		| 图片数量												|
 | isSave	| 是否记录用户已选择图片								|
 | saveStr	| 缓存记录时字段										|
-| isBase64	| 结果是否转base64 仅支持小程序且图片不能过大不建议使用,可将代码复制出来在chooseImage中直接转换	(详见show.vue)|
+| isBase64	| 结果是否转base64 (V1.0.2移除)|
 | ------	| ------												|
 | chooseImage()	| 调用getImage，并且emit绑定	|
 | getImage()	| 调用uni.chooseImage选择本地相册图片或者拍照	|
 | delImg()	| 删除图片	|
 | viewImg()	| 调用uni.previewImage预览图片	|
 
+* V1.0.2 编译模式修改 增加头条小程序 (只支持小程序)
+
+组件中 isBase64 字段移除（页面间传值数据有大小限制，有转base64需求的在$emit事件中转化即可 show.vue界面具体示例）
+
 ## xyz-swiper 自定义轮播图
 
-| 字段/方法名		|  字段/方法名说明												|
-| ------	| ------												|
-| indicatorDots		| 是否显示面板指示点										|
-| indicatorColor		| 指示点颜色												|
-| indicatorActiveColor	| 当前选中的指示点颜色							|
-| autoplay	| 是否自动切换										|
-| interval	| 自动切换时间间隔	|
-| duration	| 滑动动画时长	|
-| circular	| 是否采用衔接滑动	|
-| isDiyDots	| 是否自定义小圆点样式  true时 indicatorDots必须设为false	|
-| arrList	| 数据	|
-| ------	| ------												|
-| dotsChange()	| 小圆点变换	|
-| goWebView()	| 轮播图页面跳转	|
+| 字段/方法名												|  字段/方法名说明|
+| ------													| ------|
+| indicatorDots												| 是否显示面板指示点(原生)|
+| indicatorColor											| 指示点颜色|
+| indicatorActiveColor										| 当前选中的指示点颜色|
+| autoplay													| 是否自动切换|
+| interval													| 自动切换时间间隔|
+| duration													| 滑动动画时长|
+| circular													| 是否采用衔接滑动|
+| isDiyDots													| 是否自定义小圆点样式  true时 indicatorDots必须设为false|
+| arrList													| 数据|
+|previousMargin			|前边距														|	|
+|nextMargin				|后边距														|	|
+|dotBottom				|自定义指示点距离底部距离														|	|
+|height				|轮播图高度														|	|
+| ------													| ------|
+| dotsChange()												| 小圆点变换|
+| goWebView()												| 轮播图页面跳转|
 
 
 ## xyz-masonry 瀑布流
@@ -179,11 +212,15 @@ V1.0.1 编译模式修改 增加头条小程序
 | isBackBtn		| 是否显示返回按钮（一级页面无返回，其它页面）											|
 | backTxt		| 返回按钮文字												|
 | navbarTitle		| 导航栏标题											|
+| height		| 标题栏高度（不包含状态栏 默认100）											|
+| bgColor		| 导航栏颜色										|
 | ------	| ------												|
 | goBack()		| 	返回事件									|
 
 ## xyz-scroll-view 自定义下拉刷新/上拉加载
+
 * 横向涉及的相关代码逻辑未判断
+
 | 字段/方法名		|  字段/方法名说明												|
 | ------	| ------												|
 | scrollX		| 是否直接返回上一级	true直接返回 false其它操作									|
@@ -211,7 +248,8 @@ V1.0.1 编译模式修改 增加头条小程序
 | goTop()		| 	返回顶部									|
 | goIdx()		| 	索引跳转		 调用scrollIntoView()方法							|
 | scrollIntoView()		| 	scroll-into-view 方法实现 该方法需要在父组件中实现	通过组件watch 监听scrollTop值变化实现							|
-(```)
+
+```
 scrollIntoView(id) {
 	let _this = this;
 	uni.createSelectorQuery()
@@ -222,9 +260,12 @@ scrollIntoView(id) {
 		})
 		.exec();
 }
-(```)
+```
+
 ## xyz-handle-image 自定义图片移动裁剪
-仅实现图片放大 纵向图片裁剪功能
+
+* 仅实现图片放大 纵向图片裁剪功能
 
 ## xyz-img-tt 基于他人组件实现当前所需要图片裁剪功能
-* 借鉴[](https://ext.dcloud.net.cn/plugin?id=404)
+
+* [借鉴](https://ext.dcloud.net.cn/plugin?id=404)

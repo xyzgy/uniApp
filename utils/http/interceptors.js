@@ -1,4 +1,4 @@
-// 拦截器
+// 拦截器配置文件
 const interceptor = {
 	isUse:false,//是否启用请求拦截器
 	request: function(params,header) {

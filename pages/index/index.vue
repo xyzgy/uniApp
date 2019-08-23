@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<!-- <xyzNavBar :isBack="false" :isBackBtn="false" backTxt=" " @goBack="goBack"></xyzNavBar> -->
+		<xyzNavBar :isBack="false" :isBackBtn="false"  @goBack="goBack"></xyzNavBar>
 		<view style="position:relative"><myTab :tabList="tabList" @tabSelect="tabSelect" :tabActiveIdx="tabActiveIdx" /></view>
 		<view style="margin-top:80upx;">
 			<view v-if="tabActiveIdx === 0">
@@ -129,11 +129,13 @@ export default {
 		};
 	},
 	onLoad() {
-		uni.getSystemInfo({
-			success(res) {
-				// console.log(res);
-			}
-		});
+		// uni.getSystemInfo({
+		// 	success(res) {
+		// 		// console.log(res);
+		// 	}
+		// });
+		// this.$utils.navigator()
+		// this.$utils.Toast()
 	},
 	methods: {
 		async chooseImage(imgArr) {
@@ -167,12 +169,14 @@ export default {
 		},
 		async testRequest(){
 			const config = {
-				url: 'graphicList',
+				url: 'public_index',
 				params: '',
-				method: 'post',
+				method: 'get',
 				loading: false
 			};
-			let getResult = await this.$store.dispatch('apiRequest', config);
+			
+			
+			let getResult = await this.$http(config);
 			// console.log(this.$config.banner({}))
 		},
 		getPhoneNumber(e){

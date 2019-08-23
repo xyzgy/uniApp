@@ -1,6 +1,6 @@
 <template>
 	<view style="position:relative;background:#fff;" :style="{height: (navHeight+statusBarHeight) + 'px'}">
-		<view style="position:fixed;width:100%;z-index:999;background:#fff;top:0" :style="{height: navHeight + 'px', paddingTop: statusBarHeight + 'px' }">
+		<view style="position:fixed;width:100%;z-index:999;top:0" :style="{height: navHeight + 'px', paddingTop: statusBarHeight + 'px',background:bgColor }">
 			<view style="display: flex;align-items: center;" class="navbar">
 				<view class="navbar_left" style="min-width:140upx;">
 					<view v-if="isBackBtn" style="display: flex;align-items: center;" @click="goBack">
@@ -38,12 +38,20 @@ export default {
 		navbarTitle: {
 			type: String,
 			default: '源未文化'
+		},
+		height:{
+			type:Number,
+			default:100
+		},
+		bgColor:{
+			type: String,
+			default: '#fff'
 		}
 	},
 	data() {
 		return {
 			statusBarHeight: '',
-			navHeight: ''		
+			navHeight: uni.upx2px(this.height)	
 		};
 	},
 	methods: {
@@ -63,7 +71,6 @@ export default {
 		uni.getSystemInfo({
 			success(res) {
 				_this.statusBarHeight = res.statusBarHeight;
-				_this.navHeight = uni.upx2px(100);
 			}
 		});
 	}
@@ -73,7 +80,7 @@ export default {
 <style scoped="" lang="less">
 .navbar {
 	height: 100upx;
-	// border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 	> view {
 		display: flex;
 		justify-content: center;

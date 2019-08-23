@@ -7,7 +7,11 @@ Vue.component('xyzNavBar',xyzNavBar)
 Vue.component('xyzModal',xyzModal)
 
 import store from './store'
+import http from './utils/http'
+import utils from './utils/util.js'
 Vue.prototype.$store = store
+Vue.prototype.$http = http
+Vue.prototype.$utils = utils
 
 Vue.config.productionTip = false
 
